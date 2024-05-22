@@ -21,9 +21,9 @@ public class QuizViewModel extends ViewModel {
 
     private void loadQuestions() {
         List<Question> questionList = new ArrayList<>();
-        questionList.add(new Question("Câu hỏi 1", List.of("Lựa chọn 1", "Lựa chọn 2", "Lựa chọn 3", "Lựa chọn 4"), 0));
-        questionList.add(new Question("Câu hỏi 2", List.of("Lựa chọn 1", "Lựa chọn 2", "Lựa chọn 3", "Lựa chọn 4"), 1));
-        questionList.add(new Question("Câu hỏi 3", List.of("Lựa chọn 1", "Lựa chọn 2", "Lựa chọn 3", "Lựa chọn 4"), 2));
+        questionList.add(new Question("Đuôi thì chẳng thấy, mà có hai đầu?", List.of("Cây cầu", "Con gà", "Con chó", "Con rắn"), 0));
+        questionList.add(new Question("Vào tháng nào con người sẽ ngủ ít nhất trong năm?", List.of("Tháng 1", "Tháng 2", "Tháng 12", "Tháng 8"), 1));
+        questionList.add(new Question("Loại xe không có bánh thường thấy ở đâu?", List.of("Nhà", "Xưởng", "Bàn cờ vua", "Siêu thị"), 2));
         questions.setValue(questionList);
     }
 }
