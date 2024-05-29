@@ -3,7 +3,6 @@ package hmh.edu.quizzapp;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private String[][] answers;
     private int[] correctAnswers;
     private int currentQuestionIndex = 0;
+    private int correctAnswersCount = 0;  // Variable to keep track of correct answers
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +106,7 @@ public class MainActivity extends AppCompatActivity {
             if (currentQuestionIndex < questions.length) {
                 showQuestion();
             } else {
-                nextButton.setVisibility(View.GONE);
-                questionTitle.setText("HOÀN THÀNH CÁC CÂU HỎI");
-                answer1.setVisibility(View.GONE);
-                answer2.setVisibility(View.GONE);
-                answer3.setVisibility(View.GONE);
-                answer4.setVisibility(View.GONE);
+                showFinalScore();
             }
         });
 
@@ -140,25 +135,30 @@ public class MainActivity extends AppCompatActivity {
     private void checkAnswer(int answerIndex, Button selectedButton) {
         if (answerIndex == correctAnswers[currentQuestionIndex]) {
             selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            correctAnswersCount++;  // Increment correct answers count
             Toast.makeText(this, "ĐÚNG!", Toast.LENGTH_SHORT).show();
         } else {
             selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
             Toast.makeText(this, "SAI!", Toast.LENGTH_SHORT).show();
-            // Tự động chuyển qua câu hỏi tiếp theo sau khi thông báo đáp án sai
-            currentQuestionIndex++;
-            resetAnswerButtons();
-            if (currentQuestionIndex < questions.length) {
-                showQuestion();
-            } else {
-                // Nếu đã hoàn thành tất cả các câu hỏi
-                nextButton.setVisibility(View.GONE);
-                questionTitle.setText("HOÀN THÀNH CÁC CÂU HỎI");
-                answer1.setVisibility(View.GONE);
-                answer2.setVisibility(View.GONE);
-                answer3.setVisibility(View.GONE);
-                answer4.setVisibility(View.GONE);
-            }
+        }
+
+        // Automatically move to the next question after displaying the result
+        currentQuestionIndex++;
+        resetAnswerButtons();
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showFinalScore();
         }
     }
 
+    private void showFinalScore() {
+        // Hide buttons and display the final score
+        nextButton.setVisibility(View.GONE);
+        questionTitle.setText("HOÀN THÀNH CÁC CÂU HỎI\nSố câu đúng: " + correctAnswersCount + " / " + questions.length);
+        answer1.setVisibility(View.GONE);
+        answer2.setVisibility(View.GONE);
+        answer3.setVisibility(View.GONE);
+        answer4.setVisibility(View.GONE);
+    }
 }
