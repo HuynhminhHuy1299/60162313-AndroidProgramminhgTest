@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
         questions = new String[]{
                 "Ngôn ngữ lập trình nào được sử dụng để phát triển Android?",
                 "Hệ điều hành nào không phải là hệ điều hành di động?",
@@ -103,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         nextButton.setOnClickListener(v -> {
             currentQuestionIndex++;
+            resetAnswerButtons();
             if (currentQuestionIndex < questions.length) {
                 showQuestion();
             } else {
@@ -115,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        answer1.setOnClickListener(v -> checkAnswer(0));
-        answer2.setOnClickListener(v -> checkAnswer(1));
-        answer3.setOnClickListener(v -> checkAnswer(2));
-        answer4.setOnClickListener(v -> checkAnswer(3));
+        answer1.setOnClickListener(v -> checkAnswer(0, answer1));
+        answer2.setOnClickListener(v -> checkAnswer(1, answer2));
+        answer3.setOnClickListener(v -> checkAnswer(2, answer3));
+        answer4.setOnClickListener(v -> checkAnswer(3, answer4));
     }
 
     private void showQuestion() {
@@ -130,11 +130,35 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setVisibility(View.VISIBLE);
     }
 
-    private void checkAnswer(int answerIndex) {
+    private void resetAnswerButtons() {
+        answer1.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        answer2.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        answer3.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        answer4.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+    }
+
+    private void checkAnswer(int answerIndex, Button selectedButton) {
         if (answerIndex == correctAnswers[currentQuestionIndex]) {
-            Toast.makeText(this, "ĐÚNG!", Toast.LENGTH_SHORT).show();
+            selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            Toast.makeText(this, "ĐÚNG!", Toast.LENGTH_SHORT).show();
         } else {
+            selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
             Toast.makeText(this, "SAI!", Toast.LENGTH_SHORT).show();
+            // Tự động chuyển qua câu hỏi tiếp theo sau khi thông báo đáp án sai
+            currentQuestionIndex++;
+            resetAnswerButtons();
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                // Nếu đã hoàn thành tất cả các câu hỏi
+                nextButton.setVisibility(View.GONE);
+                questionTitle.setText("HOÀN THÀNH CÁC CÂU HỎI");
+                answer1.setVisibility(View.GONE);
+                answer2.setVisibility(View.GONE);
+                answer3.setVisibility(View.GONE);
+                answer4.setVisibility(View.GONE);
+            }
         }
     }
+
 }
