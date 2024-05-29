@@ -16,12 +16,12 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout startScreen, quizScreen;
     private TextView questionTitle;
-    private Button answer1, answer2, answer3, answer4, nextButton;
+    private Button answer1, answer2, answer3, answer4, nextButton, retryButton;
     private String[] questions;
     private String[][] answers;
     private int[] correctAnswers;
     private int currentQuestionIndex = 0;
-    private int correctAnswersCount = 0;  // Variable to keep track of correct answers
+    private int correctAnswersCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         answer3 = findViewById(R.id.answer3);
         answer4 = findViewById(R.id.answer4);
         nextButton = findViewById(R.id.next_button);
+        retryButton = findViewById(R.id.retry_button);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -110,6 +111,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        retryButton.setOnClickListener(v -> {
+            // Reset quiz and start over
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            resetAnswerButtons();
+            showQuestion();
+            retryButton.setVisibility(View.GONE);
+            quizScreen.setVisibility(View.VISIBLE);
+            answer1.setVisibility(View.VISIBLE);
+            answer2.setVisibility(View.VISIBLE);
+            answer3.setVisibility(View.VISIBLE);
+            answer4.setVisibility(View.VISIBLE);
+            nextButton.setVisibility(View.VISIBLE);
+        });
+
         answer1.setOnClickListener(v -> checkAnswer(0, answer1));
         answer2.setOnClickListener(v -> checkAnswer(1, answer2));
         answer3.setOnClickListener(v -> checkAnswer(2, answer3));
@@ -122,34 +138,38 @@ public class MainActivity extends AppCompatActivity {
         answer2.setText(answers[currentQuestionIndex][1]);
         answer3.setText(answers[currentQuestionIndex][2]);
         answer4.setText(answers[currentQuestionIndex][3]);
-        nextButton.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.GONE);  // Hide the Next button initially
     }
 
     private void resetAnswerButtons() {
-        answer1.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        answer2.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        answer3.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        answer4.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        answer1.setBackgroundColor(getResources().getColor(R.color.default_answer));
+        answer2.setBackgroundColor(getResources().getColor(R.color.default_answer));
+        answer3.setBackgroundColor(getResources().getColor(R.color.default_answer));
+        answer4.setBackgroundColor(getResources().getColor(R.color.default_answer));
+        answer1.setEnabled(true);  // Re-enable buttons
+        answer2.setEnabled(true);
+        answer3.setEnabled(true);
+        answer4.setEnabled(true);
     }
 
     private void checkAnswer(int answerIndex, Button selectedButton) {
         if (answerIndex == correctAnswers[currentQuestionIndex]) {
-            selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-            correctAnswersCount++;  // Increment correct answers count
+            selectedButton.setBackgroundColor(getResources().getColor(R.color.correct_answer));
+            correctAnswersCount++;
             Toast.makeText(this, "ĐÚNG!", Toast.LENGTH_SHORT).show();
         } else {
-            selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            selectedButton.setBackgroundColor(getResources().getColor(R.color.incorrect_answer));
             Toast.makeText(this, "SAI!", Toast.LENGTH_SHORT).show();
         }
 
-        // Automatically move to the next question after displaying the result
-        currentQuestionIndex++;
-        resetAnswerButtons();
-        if (currentQuestionIndex < questions.length) {
-            showQuestion();
-        } else {
-            showFinalScore();
-        }
+        // Disable buttons after an answer is selected
+        answer1.setEnabled(false);
+        answer2.setEnabled(false);
+        answer3.setEnabled(false);
+        answer4.setEnabled(false);
+
+        // Show Next button after answering
+        nextButton.setVisibility(View.VISIBLE);
     }
 
     private void showFinalScore() {
@@ -160,5 +180,6 @@ public class MainActivity extends AppCompatActivity {
         answer2.setVisibility(View.GONE);
         answer3.setVisibility(View.GONE);
         answer4.setVisibility(View.GONE);
+        retryButton.setVisibility(View.VISIBLE);
     }
 }
